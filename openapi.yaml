@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   title: Eversource Product Catalogue API
   description: API for suppliers to create a product catalogue entry in the Eversource system.
@@ -29,158 +29,156 @@ paths:
                 item:
                   type: object
                   required:
-                    - itemCode
-                    - itemDescription
+                    - code
+                    - description
                   properties:
-                    itemCode:
+                    code:
                       type: string
                       description: Supplier's item code
                       example: "87416"
-                    itemDescription:
+                    description:
                       type: string
                       description: Supplier's item description
                       example: "CHERRIES IQF"
-                    itemSizeDescription:
+                    sizeDescription:
                       type: string
                       description: Supplier's item dimensions
                       example: "1 KG"
-                    itemBrand:
+                    brand:
                       type: string
                       description: Supplier's item brand
                       example: "CATCHOICE"
-                    itemUnitOfMeasure:
+                    unitOfMeasure:
                       type: string
                       description: Unit of measure for the item
                       example: "BAG"
-                    itemCategory:
+                    category:
                       type: string
                       description: Catalogue Category Group
                       example: "B3718"
-                    itemCategoryDescription:
+                    categoryDescription:
                       type: string
                       description: Catalogue Category Description
                       example: "FROZEN FRUIT"
-                    itemTaxRate:
+                    taxRate:
                       type: number
                       format: float
                       description: Tax rate for the item
                       example: 0.0
-                    itemPrice:
+                    price:
                       type: object
                       required:
-                        - priceEffectiveDate
-                        - price
+                        - effectiveDate
+                        - amount
                       properties:
-                        priceEffectiveDate:
+                        effectiveDate:
                           type: string
                           description: Effective date of the price
                           example: "*CURRENT"
-                        price:
+                        amount:
                           type: number
                           format: float
                           description: Price of the item
                           example: 10.71
-                    itemQuantityDescription:
+                    quantityDescription:
                       type: string
                       description: Supplier's item quantity description
                       example: "50pk"
-                    itemCompatibleType:
+                    compatibleType:
                       type: string
                       description: Compatible type
                       example: "Laser Printer"
-                    itemCompatibleModels:
+                    compatibleModels:
                       type: string
                       description: List of compatible models
                       example: "Stylus Colour 200"
-                    itemExtendedDescription:
+                    extendedDescription:
                       type: string
                       description: Extended item description
                       example: "High-quality frozen cherries"
-                    itemTechnicalSpecification:
+                    technicalSpecification:
                       type: string
                       description: Item technical specification
                       example: "Frozen at -18°C"
-                    itemSpecificationURL:
+                    specificationURL:
                       type: string
                       description: URL to the manufacturer's technical specification
                       example: "http://example.com/spec"
-                    itemSpecificationNotes:
+                    specificationNotes:
                       type: string
                       description: Manufacturer's notes
                       example: "Best stored in a freezer"
-                    itemUnitOfMeasureDescription:
+                    unitOfMeasureDescription:
                       type: string
                       description: Long description for unit of measure
                       example: "Bag of 1 KG"
-                    itemImageSmall:
+                    imageSmall:
                       type: string
                       description: Thumbnail image name
                       example: "cherries_small.jpg"
-                    itemImageLarge:
+                    imageLarge:
                       type: string
                       description: Large image name
                       example: "cherries_large.jpg"
-                    itemImagePDF:
+                    imagePDF:
                       type: string
                       description: PDF image name
                       example: "cherries.pdf"
-                    itemBrandLogo:
+                    brandLogo:
                       type: string
                       description: Brand logo image path
                       example: "catchoice.jpg"
-                    itemLeadTime:
+                    leadTime:
                       type: integer
                       description: Lead time in days for shipping
                       example: 1
-                    itemDefaultWarehouse:
+                    defaultWarehouse:
                       type: string
                       description: Default warehouse
                       example: "WH1"
-                    itemStockOnHand:
+                    stockOnHand:
                       type: integer
                       description: Current stock level
                       example: 100
-                    itemOutOfStockPolicy:
+                    outOfStockPolicy:
                       type: string
                       description: Out of stock policy
                       example: "0"
-                    itemType:
+                    type:
                       type: string
                       description: Item type as defined by ECOS
                       example: "*INVENTORY"
-                    itemWeight:
+                    weight:
                       type: number
                       format: float
                       description: Weight of item
                       example: 1.0
-                    itemMinimumOrderQuantity:
+                    minimumOrderQuantity:
                       type: integer
                       description: Minimum order quantity
                       example: 1
-                    itemMaximumOrderQuantity:
+                    maximumOrderQuantity:
                       type: integer
                       description: Maximum order quantity
                       example: 1000
-                    itemLotSize:
+                    lotSize:
                       type: integer
                       description: Minimum incremental amount that can be purchased
                       example: 1
-                    itemPriceList:
+                    priceList:
                       type: string
                       description: Price list code
                       example: "PL1"
-                    itemCurrency:
+                    currency:
                       type: string
                       description: Currency used for this item
                       example: "NZD"
       responses:
-        '201':
+        "201":
           description: Product catalogue entry created successfully
-        '400':
+        "400":
           description: Bad request
-        '401':
+        "401":
           description: Unauthorized
-        '500':
+        "500":
           description: Internal server error
-
-
