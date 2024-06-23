@@ -1,0 +1,186 @@
+openapi: 3.0.0
+info:
+  title: Eversource Product Catalogue API
+  description: API for suppliers to create a product catalogue entry in the Eversource system.
+  version: 1.0.0
+paths:
+  /catalogue:
+    post:
+      summary: Create a new product catalogue entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - customerNumber
+                - authenticationCode
+                - item
+              properties:
+                customerNumber:
+                  type: string
+                  description: ECOS Customer Number
+                  example: "1234567890"
+                authenticationCode:
+                  type: string
+                  description: ECOS Authentication Code
+                  example: "authcode123456"
+                item:
+                  type: object
+                  required:
+                    - itemCode
+                    - itemDescription
+                  properties:
+                    itemCode:
+                      type: string
+                      description: Supplier's item code
+                      example: "87416"
+                    itemDescription:
+                      type: string
+                      description: Supplier's item description
+                      example: "CHERRIES IQF"
+                    itemSizeDescription:
+                      type: string
+                      description: Supplier's item dimensions
+                      example: "1 KG"
+                    itemBrand:
+                      type: string
+                      description: Supplier's item brand
+                      example: "CATCHOICE"
+                    itemUnitOfMeasure:
+                      type: string
+                      description: Unit of measure for the item
+                      example: "BAG"
+                    itemCategory:
+                      type: string
+                      description: Catalogue Category Group
+                      example: "B3718"
+                    itemCategoryDescription:
+                      type: string
+                      description: Catalogue Category Description
+                      example: "FROZEN FRUIT"
+                    itemTaxRate:
+                      type: number
+                      format: float
+                      description: Tax rate for the item
+                      example: 0.0
+                    itemPrice:
+                      type: object
+                      required:
+                        - priceEffectiveDate
+                        - price
+                      properties:
+                        priceEffectiveDate:
+                          type: string
+                          description: Effective date of the price
+                          example: "*CURRENT"
+                        price:
+                          type: number
+                          format: float
+                          description: Price of the item
+                          example: 10.71
+                    itemQuantityDescription:
+                      type: string
+                      description: Supplier's item quantity description
+                      example: "50pk"
+                    itemCompatibleType:
+                      type: string
+                      description: Compatible type
+                      example: "Laser Printer"
+                    itemCompatibleModels:
+                      type: string
+                      description: List of compatible models
+                      example: "Stylus Colour 200"
+                    itemExtendedDescription:
+                      type: string
+                      description: Extended item description
+                      example: "High-quality frozen cherries"
+                    itemTechnicalSpecification:
+                      type: string
+                      description: Item technical specification
+                      example: "Frozen at -18°C"
+                    itemSpecificationURL:
+                      type: string
+                      description: URL to the manufacturer's technical specification
+                      example: "http://example.com/spec"
+                    itemSpecificationNotes:
+                      type: string
+                      description: Manufacturer's notes
+                      example: "Best stored in a freezer"
+                    itemUnitOfMeasureDescription:
+                      type: string
+                      description: Long description for unit of measure
+                      example: "Bag of 1 KG"
+                    itemImageSmall:
+                      type: string
+                      description: Thumbnail image name
+                      example: "cherries_small.jpg"
+                    itemImageLarge:
+                      type: string
+                      description: Large image name
+                      example: "cherries_large.jpg"
+                    itemImagePDF:
+                      type: string
+                      description: PDF image name
+                      example: "cherries.pdf"
+                    itemBrandLogo:
+                      type: string
+                      description: Brand logo image path
+                      example: "catchoice.jpg"
+                    itemLeadTime:
+                      type: integer
+                      description: Lead time in days for shipping
+                      example: 1
+                    itemDefaultWarehouse:
+                      type: string
+                      description: Default warehouse
+                      example: "WH1"
+                    itemStockOnHand:
+                      type: integer
+                      description: Current stock level
+                      example: 100
+                    itemOutOfStockPolicy:
+                      type: string
+                      description: Out of stock policy
+                      example: "0"
+                    itemType:
+                      type: string
+                      description: Item type as defined by ECOS
+                      example: "*INVENTORY"
+                    itemWeight:
+                      type: number
+                      format: float
+                      description: Weight of item
+                      example: 1.0
+                    itemMinimumOrderQuantity:
+                      type: integer
+                      description: Minimum order quantity
+                      example: 1
+                    itemMaximumOrderQuantity:
+                      type: integer
+                      description: Maximum order quantity
+                      example: 1000
+                    itemLotSize:
+                      type: integer
+                      description: Minimum incremental amount that can be purchased
+                      example: 1
+                    itemPriceList:
+                      type: string
+                      description: Price list code
+                      example: "PL1"
+                    itemCurrency:
+                      type: string
+                      description: Currency used for this item
+                      example: "NZD"
+      responses:
+        '201':
+          description: Product catalogue entry created successfully
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+
