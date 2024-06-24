@@ -1,184 +1,528 @@
 openapi: 3.1.0
 info:
-  title: Eversource Product Catalogue API
-  description: API for suppliers to create a product catalogue entry in the Eversource system.
-  version: 1.0.0
+  title: Eversource API V1
+  description: API for suppliers to create a product catalogue entries in the Eversource system or process purchase orders.
+  version: 1.0.1
+tags:
+  - name: CatalogueEntries
+    description: Operations related to product catalogue entries
+  - name: PurchaseOrders
+    description: Operations related to purchase orders
+servers:
+  - url: https://api.eversource.com/v1
 paths:
-  /catalogue:
+  /catalogue-entries:
     post:
+      tags:
+        - CatalogueEntries
       summary: Create a new product catalogue entry
+      description: |
+        # Create a catalogue entry
+
+        The ECOS Catalogue API allows suppliers to create new product catalogue entries in the ECOS system. This API is designed to simplify the process by providing a RESTful interface. Suppliers can submit product information via a single `POST` request.
+
+        ## Authentication
+
+        Each request to the API must include an authentication code provided by ECOS. This code should be included in the header as `x-supplier-auth-code`.
+
+        ## Endpoint
+
+        ### Create a Product Catalogue Entry
+
+        - **URL:** `https://api.ecos.com/v1/catalogue-entries`
+        - **Method:** `POST`
+        - **Headers:**
+          - `Content-Type: application/json`
+          - `x-supplier-auth-code: your_auth_code_here`
+
+        ### Request Body
+
+        The request body must be a JSON or XML object containing the necessary catalogue entry details. See below for the required and optional fields & examples.
+      parameters:
+        - in: header
+          name: x-supplier-auth-code
+          required: true
+          schema:
+            type: string
+          description: Supplier ECOS Authentication Code
+          example: "authcode123456"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - customerNumber
-                - authenticationCode
-                - item
-              properties:
-                customerNumber:
-                  type: string
-                  description: ECOS Customer Number
-                  example: "1234567890"
-                authenticationCode:
-                  type: string
-                  description: ECOS Authentication Code
-                  example: "authcode123456"
-                item:
-                  type: object
-                  required:
-                    - code
-                    - description
-                  properties:
-                    code:
-                      type: string
-                      description: Supplier's item code
-                      example: "87416"
-                    description:
-                      type: string
-                      description: Supplier's item description
-                      example: "CHERRIES IQF"
-                    sizeDescription:
-                      type: string
-                      description: Supplier's item dimensions
-                      example: "1 KG"
-                    brand:
-                      type: string
-                      description: Supplier's item brand
-                      example: "CATCHOICE"
-                    unitOfMeasure:
-                      type: string
-                      description: Unit of measure for the item
-                      example: "BAG"
-                    category:
-                      type: string
-                      description: Catalogue Category Group
-                      example: "B3718"
-                    categoryDescription:
-                      type: string
-                      description: Catalogue Category Description
-                      example: "FROZEN FRUIT"
-                    taxRate:
-                      type: number
-                      format: float
-                      description: Tax rate for the item
-                      example: 0.0
-                    price:
-                      type: object
-                      required:
-                        - effectiveDate
-                        - amount
-                      properties:
-                        effectiveDate:
-                          type: string
-                          description: Effective date of the price
-                          example: "*CURRENT"
-                        amount:
-                          type: number
-                          format: float
-                          description: Price of the item
-                          example: 10.71
-                    quantityDescription:
-                      type: string
-                      description: Supplier's item quantity description
-                      example: "50pk"
-                    compatibleType:
-                      type: string
-                      description: Compatible type
-                      example: "Laser Printer"
-                    compatibleModels:
-                      type: string
-                      description: List of compatible models
-                      example: "Stylus Colour 200"
-                    extendedDescription:
-                      type: string
-                      description: Extended item description
-                      example: "High-quality frozen cherries"
-                    technicalSpecification:
-                      type: string
-                      description: Item technical specification
-                      example: "Frozen at -18°C"
-                    specificationURL:
-                      type: string
-                      description: URL to the manufacturer's technical specification
-                      example: "http://example.com/spec"
-                    specificationNotes:
-                      type: string
-                      description: Manufacturer's notes
-                      example: "Best stored in a freezer"
-                    unitOfMeasureDescription:
-                      type: string
-                      description: Long description for unit of measure
-                      example: "Bag of 1 KG"
-                    imageSmall:
-                      type: string
-                      description: Thumbnail image name
-                      example: "cherries_small.jpg"
-                    imageLarge:
-                      type: string
-                      description: Large image name
-                      example: "cherries_large.jpg"
-                    imagePDF:
-                      type: string
-                      description: PDF image name
-                      example: "cherries.pdf"
-                    brandLogo:
-                      type: string
-                      description: Brand logo image path
-                      example: "catchoice.jpg"
-                    leadTime:
-                      type: integer
-                      description: Lead time in days for shipping
-                      example: 1
-                    defaultWarehouse:
-                      type: string
-                      description: Default warehouse
-                      example: "WH1"
-                    stockOnHand:
-                      type: integer
-                      description: Current stock level
-                      example: 100
-                    outOfStockPolicy:
-                      type: string
-                      description: Out of stock policy
-                      example: "0"
-                    type:
-                      type: string
-                      description: Item type as defined by ECOS
-                      example: "*INVENTORY"
-                    weight:
-                      type: number
-                      format: float
-                      description: Weight of item
-                      example: 1.0
-                    minimumOrderQuantity:
-                      type: integer
-                      description: Minimum order quantity
-                      example: 1
-                    maximumOrderQuantity:
-                      type: integer
-                      description: Maximum order quantity
-                      example: 1000
-                    lotSize:
-                      type: integer
-                      description: Minimum incremental amount that can be purchased
-                      example: 1
-                    priceList:
-                      type: string
-                      description: Price list code
-                      example: "PL1"
-                    currency:
-                      type: string
-                      description: Currency used for this item
-                      example: "NZD"
+              $ref: "#/components/schemas/CatalogueEntry"
       responses:
         "201":
           description: Product catalogue entry created successfully
         "400":
           description: Bad request
         "401":
-          description: Unauthorized
+          description: Unauthorized. No valid authentication code provided.
         "500":
           description: Internal server error
+  /purchase-orders:
+    post:
+      tags:
+        - PurchaseOrders
+      summary: Create a new purchase order
+      description: |
+        # Create a New Purchase Order
+
+        The ECOS Purchase Order API allows suppliers to create new outbound purchase order entries in the ECOS system. This API is designed to simplify the process by providing a RESTful interface. Suppliers can submit purchase order information via a single `POST` request.
+
+        ## Authentication
+
+        Each request to the API must include an authentication code provided by ECOS. This code should be included in the header as `x-supplier-auth-code`.
+
+        ## Endpoint
+
+        ### Create a Purchase Order
+
+        - **URL:** `https://api.ecos.com/v1/purchase-orders`
+        - **Method:** `POST`
+        - **Headers:**
+          - `Content-Type: application/json`
+          - `x-supplier-auth-code: your_auth_code_here`
+
+        ### Request Body
+
+        The request body must be a JSON or XML object containing the necessary purchase order details. See below for the required and optional fields & examples.
+      parameters:
+        - in: header
+          name: x-supplier-auth-code
+          required: true
+          schema:
+            type: string
+          description: Supplier ECOS Authentication Code
+          example: "authcode123456"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PurchaseOrder"
+      responses:
+        "201":
+          description: Purchase order created successfully
+        "400":
+          description: Invalid request
+        "401":
+          description: Unauthorized. No valid authentication code provided.
+        "500":
+          description: Internal server error
+components:
+  schemas:
+    CatalogueEntry:
+      type: object
+      required:
+        - customerNumber
+        - item
+      properties:
+        customerNumber:
+          type: string
+          description: ECOS Customer Number
+          example: "1234567890"
+        item:
+          type: object
+          required:
+            - code
+            - description
+          properties:
+            code:
+              type: string
+              description: Supplier's item code
+              example: "87416"
+            description:
+              type: string
+              description: Supplier's item description
+              example: "CHERRIES IQF"
+            sizeDescription:
+              type: string
+              description: Supplier's item dimensions
+              example: "1 KG"
+            brand:
+              type: string
+              description: Supplier's item brand
+              example: "CATCHOICE"
+            unitOfMeasure:
+              type: string
+              description: Unit of measure for the item
+              example: "BAG"
+            category:
+              type: string
+              description: Catalogue Category Group
+              example: "B3718"
+            categoryDescription:
+              type: string
+              description: Catalogue Category Description
+              example: "FROZEN FRUIT"
+            taxRate:
+              type: number
+              format: float
+              description: Tax rate for the item
+              example: 0.0
+            price:
+              type: object
+              required:
+                - effectiveDate
+                - amount
+              properties:
+                effectiveDate:
+                  type: string
+                  description: Effective date of the price
+                  example: "*CURRENT"
+                amount:
+                  type: number
+                  format: float
+                  description: Price of the item
+                  example: 10.71
+            quantityDescription:
+              type: string
+              description: Supplier's item quantity description
+              example: "50pk"
+            compatibleType:
+              type: string
+              description: Compatible type
+              example: "Laser Printer"
+            compatibleModels:
+              type: string
+              description: List of compatible models
+              example: "Stylus Colour 200"
+            extendedDescription:
+              type: string
+              description: Extended item description
+              example: "High-quality frozen cherries"
+            technicalSpecification:
+              type: string
+              description: Item technical specification
+              example: "Frozen at -18°C"
+            specificationURL:
+              type: string
+              description: URL to the manufacturer's technical specification
+              example: "http://example.com/spec"
+            specificationNotes:
+              type: string
+              description: Manufacturer's notes
+              example: "Best stored in a freezer"
+            unitOfMeasureDescription:
+              type: string
+              description: Long description for unit of measure
+              example: "Bag of 1 KG"
+            imageSmall:
+              type: string
+              description: Thumbnail image name
+              example: "cherries_small.jpg"
+            imageLarge:
+              type: string
+              description: Large image name
+              example: "cherries_large.jpg"
+            imagePDF:
+              type: string
+              description: PDF image name
+              example: "cherries.pdf"
+            brandLogo:
+              type: string
+              description: Brand logo image path
+              example: "catchoice.jpg"
+            leadTime:
+              type: integer
+              description: Lead time in days for shipping
+              example: 1
+            defaultWarehouse:
+              type: string
+              description: Default warehouse
+              example: "WH1"
+            stockOnHand:
+              type: integer
+              description: Current stock level
+              example: 100
+            outOfStockPolicy:
+              type: string
+              description: Out of stock policy
+              example: "0"
+            type:
+              type: string
+              description: Item type as defined by ECOS
+              example: "*INVENTORY"
+            weight:
+              type: number
+              format: float
+              description: Weight of item
+              example: 1.0
+            minimumOrderQuantity:
+              type: integer
+              description: Minimum order quantity
+              example: 1
+            maximumOrderQuantity:
+              type: integer
+              description: Maximum order quantity
+              example: 1000
+            lotSize:
+              type: integer
+              description: Minimum incremental amount that can be purchased
+              example: 1
+            priceList:
+              type: string
+              description: Price list code
+              example: "PL1"
+            currency:
+              type: string
+              description: Currency used for this item
+              example: "NZD"
+    PurchaseOrder:
+      type: object
+      required:
+        - customerNumber
+        - order
+      properties:
+        customerNumber:
+          type: string
+          description: ECOS customer number
+        order:
+          type: object
+          required:
+            - orderNumber
+            - orderDate
+            - purchaseOrderNumber
+            - createdBy
+            - delivery
+            - customer
+            - billing
+            - orderLines
+          properties:
+            orderNumber:
+              type: string
+              description: ECOS order number
+            orderDate:
+              type: string
+              format: date
+              description: ECOS order date in format yyyy-mm-dd
+            orderCreated:
+              type: string
+              format: date-time
+              description: Order creation date in format yyyy-mm-ddTHH:MM:SS
+            orderSent:
+              type: string
+              format: date-time
+              description: Order sent date in format yyyy-mm-ddTHH:MM:SS
+            purchaseOrderNumber:
+              type: string
+              description: ECOS purchase order number
+            createdBy:
+              type: string
+              description: Created by name
+            orderComments:
+              type: string
+              description: Order comments
+            orderReference:
+              type: string
+              description: Customer order reference
+            goodsValue:
+              type: number
+              format: float
+              description: Total goods value
+            taxValue:
+              type: number
+              format: float
+              description: Total tax value
+            totalValue:
+              type: number
+              format: float
+              description: Total order cost (GST + cost of goods)
+            currency:
+              type: string
+              description: Order currency (default = NZD)
+            delivery:
+              type: object
+              required:
+                - name
+                - address1
+                - city
+              properties:
+                name:
+                  type: string
+                  description: Name of organisation to be delivered to
+                address1:
+                  type: string
+                  description: Delivery address line 1
+                address2:
+                  type: string
+                  description: Delivery address line 2
+                address3:
+                  type: string
+                  description: Delivery address line 3
+                city:
+                  type: string
+                  description: Delivery city
+                country:
+                  type: string
+                  description: Delivery country
+                postCode:
+                  type: string
+                  description: Delivery postal code
+                latitude:
+                  type: string
+                  description: Delivery latitude
+                longitude:
+                  type: string
+                  description: Delivery longitude
+                comment:
+                  type: string
+                  description: Delivery comment
+                method:
+                  type: string
+                  description: Delivery method
+            customer:
+              type: object
+              required:
+                - billingId
+                - addressSequence
+                - name
+                - address1
+                - city
+                - country
+                - email
+              properties:
+                billingId:
+                  type: string
+                  description: Merchant/supplier customer ID
+                addressSequence:
+                  type: string
+                  description: Delivery sequence number
+                name:
+                  type: string
+                  description: Billing merchant/customer name
+                address1:
+                  type: string
+                  description: Billing address line 1
+                address2:
+                  type: string
+                  description: Billing address line 2
+                address3:
+                  type: string
+                  description: Billing address line 3
+                city:
+                  type: string
+                  description: Billing city
+                country:
+                  type: string
+                  description: Billing country
+                postCode:
+                  type: string
+                  description: Billing postal code
+                contactName:
+                  type: string
+                  description: Contact name
+                contactPhone:
+                  type: string
+                  description: Contact phone
+                email:
+                  type: string
+                  description: Contact email address
+            billing:
+              type: object
+              required:
+                - accountCode
+                - addressSequence
+                - debtorCode
+                - chargeType
+                - paymentType
+              properties:
+                accountCode:
+                  type: string
+                  description: Customer ID
+                addressSequence:
+                  type: string
+                  description: Customer delivery point code
+                debtorCode:
+                  type: string
+                  description: Debtor number
+                chargeType:
+                  type: string
+                  description: Charging type (*SUPPLIER or *SITE)
+                paymentType:
+                  type: string
+                  description: Customer payment type (*ACCOUNT, *CARD, *BANK, *POST, *FAX, *ARRANGED, *DEBIT)
+            orderLines:
+              type: array
+              items:
+                type: object
+                required:
+                  - lineNumber
+                  - productId
+                  - quantityOrdered
+                  - unitPrice
+                  - costOfGoods
+                properties:
+                  lineNumber:
+                    type: integer
+                    description: ECOS order line number
+                  documentLineReference:
+                    type: string
+                    description: Document line reference
+                  productId:
+                    type: string
+                    description: Customer product code
+                  productDescription:
+                    type: string
+                    description: Supplier's item description
+                  supplierItemId:
+                    type: string
+                    description: Supplier's item code
+                  unspsc:
+                    type: string
+                    description: UNSPSC catalogue code
+                  deliveryDate:
+                    type: string
+                    format: date
+                    description: Date delivery required
+                  latestDeliveryDate:
+                    type: string
+                    format: date
+                    description: Latest delivery date
+                  quantityOrdered:
+                    type: integer
+                    description: Quantity ordered
+                  innerPackQuantity:
+                    type: integer
+                    description: Supplier inner pack quantity
+                  unitOfMeasure:
+                    type: string
+                    description: Unit of measure
+                  unitPrice:
+                    type: number
+                    format: float
+                    description: Unit price of product
+                  supplierPrice:
+                    type: number
+                    format: float
+                    description: Supplier unit price
+                  supplierCurrency:
+                    type: string
+                    description: Supplier currency
+                  costOfGoods:
+                    type: number
+                    format: float
+                    description: Cost of product (unit price x quantity)
+                  taxValue:
+                    type: number
+                    format: float
+                    description: GST product value
+                  taxRate:
+                    type: number
+                    format: float
+                    description: Tax rate
+                  totalValue:
+                    type: number
+                    format: float
+                    description: Total order cost (GST + cost of goods)
+                  currency:
+                    type: string
+                    description: Order currency (default = NZD)
+                  comments:
+                    type: string
+                    description: Order line comments
+                  lineReference:
+                    type: string
+                    description: Order line reference

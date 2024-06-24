@@ -1,2 +1,2 @@
-# catalogue-openapi
-The OpenAPI spec for incoming product catalogue entries
+# Eversource OpenAPI Specification
+The OpenAPI specification for the Eversource API.
