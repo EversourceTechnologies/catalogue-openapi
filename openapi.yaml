@@ -70,35 +70,11 @@ paths:
         - PurchaseOrders
       summary: Create a new purchase order
       description: |
-        # Create a New Purchase Order
+        # Purchase Order Data Example
 
-        The ECOS Purchase Order API allows suppliers to create new outbound purchase order entries in the ECOS system. This API is designed to simplify the process by providing a RESTful interface. Suppliers can submit purchase order information via a single `POST` request.
+        The following shows an example of general purchase order data in both XML and JSON formats available to suppliers.
 
-        ## Authentication
-
-        Each request to the API must include an authentication code provided by ECOS. This code should be included in the header as `x-supplier-auth-code`.
-
-        ## Endpoint
-
-        ### Create a Purchase Order
-
-        - **URL:** `https://api.ecos.com/v1/purchase-orders`
-        - **Method:** `POST`
-        - **Headers:**
-          - `Content-Type: application/json`
-          - `x-supplier-auth-code: your_auth_code_here`
-
-        ### Request Body
-
-        The request body must be a JSON or XML object containing the necessary purchase order details. See below for the required and optional fields & examples.
-      parameters:
-        - in: header
-          name: x-supplier-auth-code
-          required: true
-          schema:
-            type: string
-          description: Supplier ECOS Authentication Code
-          example: "authcode123456"
+        As a supplier, usually only a subset of this information will be important to you.
       requestBody:
         required: true
         content:
@@ -107,7 +83,7 @@ paths:
               $ref: "#/components/schemas/PurchaseOrder"
           application/xml:
             schema:
-              $ref: "#/components/schemas/CatalogueEntry"
+              $ref: "#/components/schemas/PurchaseOrder"
       responses:
         "201":
           description: Purchase order created successfully
@@ -123,159 +99,161 @@ components:
       type: object
       required:
         - customerNumber
-        - item
+        - items
       properties:
         customerNumber:
           type: string
           description: ECOS Customer Number
           example: "1234567890"
-        item:
-          type: object
-          required:
-            - code
-            - description
-          properties:
-            code:
-              type: string
-              description: Supplier's item code
-              example: "87416"
-            description:
-              type: string
-              description: Supplier's item description
-              example: "CHERRIES IQF"
-            sizeDescription:
-              type: string
-              description: Supplier's item dimensions
-              example: "1 KG"
-            brand:
-              type: string
-              description: Supplier's item brand
-              example: "CATCHOICE"
-            unitOfMeasure:
-              type: string
-              description: Unit of measure for the item
-              example: "BAG"
-            category:
-              type: string
-              description: Catalogue Category Group
-              example: "B3718"
-            categoryDescription:
-              type: string
-              description: Catalogue Category Description
-              example: "FROZEN FRUIT"
-            taxRate:
-              type: number
-              format: float
-              description: Tax rate for the item
-              example: 0.0
-            price:
-              type: object
-              required:
-                - effectiveDate
-                - amount
-              properties:
-                effectiveDate:
-                  type: string
-                  description: Effective date of the price
-                  example: "*CURRENT"
-                amount:
-                  type: number
-                  format: float
-                  description: Price of the item
-                  example: 10.71
-            quantityDescription:
-              type: string
-              description: Supplier's item quantity description
-              example: "50pk"
-            compatibleType:
-              type: string
-              description: Compatible type
-              example: "Laser Printer"
-            compatibleModels:
-              type: string
-              description: List of compatible models
-              example: "Stylus Colour 200"
-            extendedDescription:
-              type: string
-              description: Extended item description
-              example: "High-quality frozen cherries"
-            technicalSpecification:
-              type: string
-              description: Item technical specification
-              example: "Frozen at -18°C"
-            specificationURL:
-              type: string
-              description: URL to the manufacturer's technical specification
-              example: "http://example.com/spec"
-            specificationNotes:
-              type: string
-              description: Manufacturer's notes
-              example: "Best stored in a freezer"
-            unitOfMeasureDescription:
-              type: string
-              description: Long description for unit of measure
-              example: "Bag of 1 KG"
-            imageSmall:
-              type: string
-              description: Thumbnail image name
-              example: "cherries_small.jpg"
-            imageLarge:
-              type: string
-              description: Large image name
-              example: "cherries_large.jpg"
-            imagePDF:
-              type: string
-              description: PDF image name
-              example: "cherries.pdf"
-            brandLogo:
-              type: string
-              description: Brand logo image path
-              example: "catchoice.jpg"
-            leadTime:
-              type: integer
-              description: Lead time in days for shipping
-              example: 1
-            defaultWarehouse:
-              type: string
-              description: Default warehouse
-              example: "WH1"
-            stockOnHand:
-              type: integer
-              description: Current stock level
-              example: 100
-            outOfStockPolicy:
-              type: string
-              description: Out of stock policy
-              example: "0"
-            type:
-              type: string
-              description: Item type as defined by ECOS
-              example: "*INVENTORY"
-            weight:
-              type: number
-              format: float
-              description: Weight of item
-              example: 1.0
-            minimumOrderQuantity:
-              type: integer
-              description: Minimum order quantity
-              example: 1
-            maximumOrderQuantity:
-              type: integer
-              description: Maximum order quantity
-              example: 1000
-            lotSize:
-              type: integer
-              description: Minimum incremental amount that can be purchased
-              example: 1
-            priceList:
-              type: string
-              description: Price list code
-              example: "PL1"
-            currency:
-              type: string
-              description: Currency used for this item
-              example: "NZD"
+        items:
+          type: array
+          items:
+            type: object
+            required:
+              - code
+              - description
+            properties:
+              code:
+                type: string
+                description: Supplier's item code
+                example: "87416"
+              description:
+                type: string
+                description: Supplier's item description
+                example: "CHERRIES IQF"
+              sizeDescription:
+                type: string
+                description: Supplier's item dimensions
+                example: "1 KG"
+              brand:
+                type: string
+                description: Supplier's item brand
+                example: "CATCHOICE"
+              unitOfMeasure:
+                type: string
+                description: Unit of measure for the item
+                example: "BAG"
+              category:
+                type: string
+                description: Catalogue Category Group
+                example: "B3718"
+              categoryDescription:
+                type: string
+                description: Catalogue Category Description
+                example: "FROZEN FRUIT"
+              taxRate:
+                type: number
+                format: float
+                description: Tax rate for the item
+                example: 0.0
+              price:
+                type: object
+                required:
+                  - effectiveDate
+                  - amount
+                properties:
+                  effectiveDate:
+                    type: string
+                    description: Effective date of the price
+                    example: "*CURRENT"
+                  amount:
+                    type: number
+                    format: float
+                    description: Price of the item
+                    example: 10.71
+              quantityDescription:
+                type: string
+                description: Supplier's item quantity description
+                example: "50pk"
+              compatibleType:
+                type: string
+                description: Compatible type
+                example: "Laser Printer"
+              compatibleModels:
+                type: string
+                description: List of compatible models
+                example: "Stylus Colour 200"
+              extendedDescription:
+                type: string
+                description: Extended item description
+                example: "High-quality frozen cherries"
+              technicalSpecification:
+                type: string
+                description: Item technical specification
+                example: "Frozen at -18°C"
+              specificationURL:
+                type: string
+                description: URL to the manufacturer's technical specification
+                example: "http://example.com/spec"
+              specificationNotes:
+                type: string
+                description: Manufacturer's notes
+                example: "Best stored in a freezer"
+              unitOfMeasureDescription:
+                type: string
+                description: Long description for unit of measure
+                example: "Bag of 1 KG"
+              imageSmall:
+                type: string
+                description: Thumbnail image name
+                example: "cherries_small.jpg"
+              imageLarge:
+                type: string
+                description: Large image name
+                example: "cherries_large.jpg"
+              imagePDF:
+                type: string
+                description: PDF image name
+                example: "cherries.pdf"
+              brandLogo:
+                type: string
+                description: Brand logo image path
+                example: "catchoice.jpg"
+              leadTime:
+                type: integer
+                description: Lead time in days for shipping
+                example: 1
+              defaultWarehouse:
+                type: string
+                description: Default warehouse
+                example: "WH1"
+              stockOnHand:
+                type: integer
+                description: Current stock level
+                example: 100
+              outOfStockPolicy:
+                type: string
+                description: Out of stock policy
+                example: "0"
+              type:
+                type: string
+                description: Item type as defined by ECOS
+                example: "*INVENTORY"
+              weight:
+                type: number
+                format: float
+                description: Weight of item
+                example: 1.0
+              minimumOrderQuantity:
+                type: integer
+                description: Minimum order quantity
+                example: 1
+              maximumOrderQuantity:
+                type: integer
+                description: Maximum order quantity
+                example: 1000
+              lotSize:
+                type: integer
+                description: Minimum incremental amount that can be purchased
+                example: 1
+              priceList:
+                type: string
+                description: Price list code
+                example: "PL1"
+              currency:
+                type: string
+                description: Currency used for this item
+                example: "NZD"
     PurchaseOrder:
       type: object
       required:
