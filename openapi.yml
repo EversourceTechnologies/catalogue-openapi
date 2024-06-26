@@ -180,19 +180,18 @@ paths:
             schema:
               type: object
               required:
-                - header
+                - supplierInfo
                 - item
               properties:
-                header:
+                supplierInfo:
                   type: object
                   required:
-                    - headerId
-                    - headerName
-                    - headerDate
-                    - headerSource
-                    - headerEmail
-                    - headerReference
-                    - headerAuthentication
+                    - id
+                    - name
+                    - date
+                    - source
+                    - email
+                    - reference
                   properties:
                     headerId:
                       type: string
@@ -1332,40 +1331,36 @@ components:
         - docketNumber
         - despatchDate
       properties:
-        header:
+        supplierInfo:
           type: object
           required:
-            - headerId
-            - headerName
-            - headerDate
-            - headerSource
-            - headerEmail
-            - headerReference
-            - headerAuthentication
+            - id
+            - name
+            - date
+            - source
+            - email
+            - reference
           properties:
-            headerId:
+            id:
               type: string
               description: Unique identifier for the header
-            headerName:
+            name:
               type: string
               description: Name of the supplier
-            headerDate:
+            date:
               type: string
               format: date
               description: Date of the header (yyyymmdd)
-            headerSource:
+            source:
               type: string
               description: Source of the dispatch tracking
-            headerEmail:
+            email:
               type: string
               format: email
               description: Email address of the supplier
-            headerReference:
+            reference:
               type: string
               description: Reference number for the header
-            headerAuthentication:
-              type: string
-              description: Authentication code for the header
         tracking:
           type: object
           required:
@@ -1390,14 +1385,13 @@ components:
     stockOnHandExample1:
       summary: Example for SKU stocking information at level only
       value:
-        header:
-          headerId: ABC
-          headerName: ABC Suppliers Limited
-          headerDate: 20021018
-          headerSource: STOCK
-          headerEmail: evans@ABC.com
-          headerReference: 012422
-          headerAuthentication: D3118D10XXX04D52
+        supplierInfo:
+          id: ABC
+          name: ABC Suppliers Limited
+          date: 20021018
+          source: STOCK
+          email: evans@ABC.com
+          reference: 012422
         item:
           skuCode: 528657
           skuDescription: 6 Bottle Wine / Bear Fabric Bag
@@ -1407,14 +1401,13 @@ components:
     stockOnHandExample2:
       summary: Example for SKU stocking information at Warehouse level only
       value:
-        header:
-          headerId: ABC
-          headerName: ABC Suppliers Limited
-          headerDate: 20021018
-          headerSource: STOCK
-          headerEmail: evans@ABC.com
-          headerReference: 012422
-          headerAuthentication: D3118D10XXX04D52
+        supplierInfo:
+          id: ABC
+          name: ABC Suppliers Limited
+          date: 20021018
+          source: STOCK
+          email: evans@ABC.com
+          reference: 012422
         item:
           skuCode: 528657
           skuDescription: 6 Bottle Wine / Bear Fabric Bag
@@ -1427,14 +1420,13 @@ components:
     stockOnHandExample3:
       summary: Example for SKU stocking information at Warehouse Location level only
       value:
-        header:
-          headerId: ABC
-          headerName: ABC Suppliers Limited
-          headerDate: 20021018
-          headerSource: STOCK
-          headerEmail: evans@ABC.com
-          headerReference: 012422
-          headerAuthentication: D3118D10XXX04D52
+        supplierInfo:
+          id: ABC
+          name: ABC Suppliers Limited
+          date: 20021018
+          source: STOCK
+          email: evans@ABC.com
+          reference: 012422
         item:
           skuCode: 528657
           skuDescription: 6 Bottle Wine / Bear Fabric Bag
@@ -1451,14 +1443,13 @@ components:
     stockOnHandExample4:
       summary: Example for SKU stocking information at Warehouse Location, Lot/batches level
       value:
-        header:
-          headerId: ABC
-          headerName: ABC Suppliers Limited
-          headerDate: 20021018
-          headerSource: STOCK
-          headerEmail: evans@ABC.com
-          headerReference: 012422
-          headerAuthentication: D3118D10XXX04D52
+        supplierInfo:
+          id: ABC
+          name: ABC Suppliers Limited
+          date: 20021018
+          source: STOCK
+          email: evans@ABC.com
+          reference: 012422
         item:
           skuCode: 528657
           skuDescription: 6 Bottle Wine / Bear Fabric Bag
@@ -1479,14 +1470,13 @@ components:
     stockOnHandExample5:
       summary: Example for SKU stocking information at Warehouse location and Lot/batches level, including purchase order information
       value:
-        header:
-          headerId: ABC
-          headerName: ABC Suppliers Limited
-          headerDate: 20021018
-          headerSource: STOCK
-          headerEmail: evans@ABC.com
-          headerReference: 012422
-          headerAuthentication: D3118D10XXX04D52
+        supplierInfo:
+          id: ABC
+          name: ABC Suppliers Limited
+          date: 20021018
+          source: STOCK
+          email: evans@ABC.com
+          reference: 012422
         item:
           skuCode: 528657
           skuDescription: 6 Bottle Wine / Bear Fabric Bag
