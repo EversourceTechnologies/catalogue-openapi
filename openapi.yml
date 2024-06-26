@@ -1,0 +1,1508 @@
+openapi: '3.0.2'
+info:
+  title: Eversource API V1
+  description: API for suppliers to create a product catalogue entries in the Eversource system or process purchase orders.
+  version: 1.0.1
+tags:
+  - name: CatalogueEntries
+    description: Operations related to product catalogue entries
+  - name: PurchaseOrders
+    description: Operations related to purchase orders
+  - name: Orders
+    description: Operations related to order management
+  - name: Stock Status
+    description: Operations related to stock status
+servers:
+  - url: https://api.eversource.com/v1
+paths:
+  /catalogue-entries:
+    post:
+      tags:
+        - CatalogueEntries
+      summary: Create a new product catalogue entry
+      description: |
+        # Create a catalogue entry
+
+        The ECOS Catalogue API allows suppliers to create new product catalogue entries in the ECOS system. This API is designed to simplify the process by providing a RESTful interface. Suppliers can submit product information via a single `POST` request.
+
+        ## Authentication
+
+        Each request to the API must include an authentication code provided by ECOS. This code should be included in the header as `x-supplier-auth-code`.
+
+        ## Endpoint
+
+        ### Create a Product Catalogue Entry
+
+        - **URL:** `https://api.ecos.com/v1/catalogue-entries`
+        - **Method:** `POST`
+        - **Headers:**
+          - `Content-Type: application/json`
+          - `x-supplier-auth-code: your_auth_code_here`
+
+        ### Request Body
+
+        The request body must be a JSON or XML object containing the necessary catalogue entry details. See below for the required and optional fields & examples.
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CatalogueEntry"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/CatalogueEntry"
+      responses:
+        "201":
+          description: Product catalogue entry created successfully
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized. No valid authentication code provided.
+        "500":
+          description: Internal server error
+  /purchase-orders:
+    post:
+      tags:
+        - PurchaseOrders
+      summary: Create a new purchase order
+      description: |
+        # Purchase Order Data Example
+
+        The following shows an example of general purchase order data in both XML and JSON formats available to suppliers.
+
+        As a supplier, usually only a subset of this information will be important to you.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PurchaseOrder"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/PurchaseOrder"
+      responses:
+        "201":
+          description: Purchase order created successfully
+        "400":
+          description: Invalid request
+        "401":
+          description: Unauthorized. No valid authentication code provided.
+        "500":
+          description: Internal server error
+  /orders/confirmations:
+    post:
+      summary: Create a new order confirmation
+      description: Endpoint for suppliers to confirm an order.
+      tags:
+        - Orders
+      requestBody:
+        description: Order confirmation details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderConfirmation"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/OrderConfirmation"
+      responses:
+        "201":
+          description: Order confirmation created successfully.
+        "400":
+          description: Invalid input.
+        "500":
+          description: Internal server error.
+      security:
+        - ApiKeyAuth: []
+  /orders/dispatch-notifications:
+    post:
+      summary: Notify dispatch of an order
+      description: Endpoint for suppliers to notify when an order is dispatched.
+      tags:
+        - Orders
+      requestBody:
+        description: Order confirmation details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DispatchNotifiction"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/DispatchNotifiction"
+      responses:
+        "201":
+          description: Order confirmation created successfully.
+        "400":
+          description: Invalid input.
+        "500":
+          description: Internal server error.
+      security:
+        - ApiKeyAuth: []
+  /orders/track-and-trace:
+    post:
+      tags:
+        - Orders
+      summary: Submit tracking and tracing information
+      description:  Proceeds the dispatch confirmation where the Consignment Note Number or Track and Trace URL is not known at the time of posting
+      requestBody:
+        description: Order confirmation details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TrackandTrace"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/TrackandTrace"
+      responses:
+          "201":
+            description: Order confirmation created successfully.
+          "400":
+            description: Invalid input.
+          "500":
+            description: Internal server error.
+      security:
+        - ApiKeyAuth: []
+  /stock-status:
+    post:
+      summary: Submit stock status information
+      description: Endpoint for suppliers to provide stock status details.
+      tags:
+        - Stock Status
+      requestBody:
+        description: Stock status details
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - header
+                - item
+              properties:
+                header:
+                  type: object
+                  required:
+                    - headerId
+                    - headerName
+                    - headerDate
+                    - headerSource
+                    - headerEmail
+                    - headerReference
+                    - headerAuthentication
+                  properties:
+                    headerId:
+                      type: string
+                      description: Unique identifier for the header
+                    headerName:
+                      type: string
+                      description: Name of the supplier
+                    headerDate:
+                      type: string
+                      format: date
+                      description: Date of the header (yyyymmdd)
+                    headerSource:
+                      type: string
+                      description: Source of the stock status
+                    headerEmail:
+                      type: string
+                      format: email
+                      description: Email address of the supplier
+                    headerReference:
+                      type: string
+                      description: Reference number for the header
+                    headerAuthentication:
+                      type: string
+                      description: Authentication code for the header
+                item:
+                  type: object
+                  required:
+                    - skuCode
+                  properties:
+                    skuCode:
+                      type: string
+                      description: A valid supplier SKU Item Code
+                    skuDescription:
+                      type: string
+                      description: SKU item description
+                    skuLeadTime:
+                      type: integer
+                      description: SKU Inventory Lead time
+                    skuProcurementLeadTime:
+                      type: integer
+                      description: SKU Procurement Lead time
+                    stockOnHand:
+                      type: integer
+                      description: Current stock level
+                    frozen:
+                      type: integer
+                      description: Frozen Quantity
+                    inTransit:
+                      type: integer
+                      description: Intransit Quantity
+                    warehouse:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - warehouseCode
+                          - stockOnHand
+                        properties:
+                          warehouseCode:
+                            type: string
+                            description: Code of the warehouse
+                          warehouseDescription:
+                            type: string
+                            description: Description of the warehouse
+                          stockOnHand:
+                            type: integer
+                            description: Physical Quantity exclusive of Frozen and On order Quantities
+                          frozen:
+                            type: integer
+                            description: Frozen Quantity
+                    location:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - warehouseCode
+                          - locationId
+                          - stockOnHand
+                        properties:
+                          warehouseCode:
+                            type: string
+                            description: Warehouse Code
+                          locationId:
+                            type: string
+                            description: Location identifier
+                          batchNumber:
+                            type: string
+                            description: Batch/Lot identifier
+                          stockOnHand:
+                            type: integer
+                            description: Physical Quantity
+                          onOrder:
+                            type: integer
+                            description: On Order Quantity
+                          frozen:
+                            type: integer
+                            description: Frozen or Reserved Quantity
+                          ownership:
+                            type: string
+                            description: Ownership Customer Code
+                          receiptDate:
+                            type: string
+                            format: date
+                            description: Warehouse Receipt date (yyyymmdd)
+                          expiryDate:
+                            type: string
+                            format: date
+                            description: Stock expiry date (yyyymmdd)
+                    onOrder:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - purchaseOrder
+                          - supplierName
+                          - orderedQuantity
+                          - receivedQuantity
+                        properties:
+                          purchaseOrder:
+                            type: string
+                            description: Purchase or Production Order
+                          customerOrderReference:
+                            type: string
+                            description: Customer Order reference
+                          supplierName:
+                            type: string
+                            description: Supplier
+                          orderedQuantity:
+                            type: integer
+                            description: Ordered Quantity
+                          receivedQuantity:
+                            type: integer
+                            description: Received Quantity
+                          orderDate:
+                            type: string
+                            format: date
+                            description: Order date (yyyymmdd)
+                          requiredDate:
+                            type: string
+                            format: date
+                            description: Required date (yyyymmdd)
+                          dueDate:
+                            type: string
+                            format: date
+                            description: Due date (yyyymmdd)
+                          orderStatus:
+                            type: string
+                            description: Order Status Comment
+            examples:
+              stockOnHandExample1:
+                $ref: "#/components/examples/stockOnHandExample1"
+              stockOnHandExample2:
+                $ref: "#/components/examples/stockOnHandExample2"
+              stockOnHandExample3:
+                $ref: "#/components/examples/stockOnHandExample3"
+              stockOnHandExample4:
+                $ref: "#/components/examples/stockOnHandExample4"
+              stockOnHandExample5:
+                $ref: "#/components/examples/stockOnHandExample5"
+      responses:
+        '201':
+          description: Stock status information submitted successfully.
+        '400':
+          description: Invalid input.
+        '500':
+          description: Internal server error.
+      security:
+        - ApiKeyAuth: []
+  /invoices:
+    post:
+      summary: Submit a new invoice
+      description: Add a new invoice to the system.
+      operationId: submitInvoice
+      tags:
+        - Invoices
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                supplierInfo:
+                  type: object
+                  required:
+                    - id
+                    - name
+                    - date
+                    - source
+                  properties:
+                    id:
+                      type: string
+                      description: Header ID
+                      example: ABC
+                    name:
+                      type: string
+                      description: Header name
+                      example: ABC Suppliers Limited
+                    date:
+                      type: string
+                      format: date
+                      description: Header date in format yyyy-mm-dd
+                      example: 2002-10-18
+                    source:
+                      type: string
+                      description: Source of the header
+                      example: INVOICE
+                    email:
+                      type: string
+                      format: email
+                      description: Email address for the header
+                      example: evans@ABC.com
+                    reference:
+                      type: string
+                      description: Header reference
+                      maxLength: 10
+                      example: 012422
+                    processOption:
+                      type: string
+                      description: Header process option
+                      example: REFRESH
+                invoice:
+                  type: object
+                  properties:
+                    invoiceNumber:
+                      type: string
+                      description: Invoice or credit note number
+                      maxLength: 10
+                      example: C101800374
+                    invoiceDate:
+                      type: string
+                      format: date
+                      description: Date of the invoice in format yyyy-mm-dd
+                      example: 2002-10-18
+                    despatches:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          docketNumber:
+                            type: string
+                            description: Delivery despatch docket number
+                            maxLength: 10
+                            example: DN1235689
+                          despatchDate:
+                            type: string
+                            format: date
+                            description: Despatch date in format yyyy-mm-dd
+                            example: 2016-05-01
+                        required:
+                          - docketNumber
+                          - despatchDate
+                    invoiceImage:
+                      type: string
+                      description: Image path to Invoice/Credit Note PDF
+                      maxLength: 256
+                      example: http://www.abc.com/invoice/C101800374
+                    orderReference:
+                      type: string
+                      description: Invoice/Customer Reference
+                      maxLength: 20
+                      example: FRED
+                    purchaseOrder:
+                      type: string
+                      description: Supplier Purchase Order number
+                      maxLength: 15
+                      example: 1234567
+                    orders:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          orderNumber:
+                            type: string
+                            description: Ecos order number
+                            maxLength: 10
+                            example: 526761
+                          orderDate:
+                            type: string
+                            format: date
+                            description: Ecos order date in format yyyy-mm-dd
+                            example: 2002-10-17
+                    billTo:
+                      type: object
+                      properties:
+                        merchantCode:
+                          type: string
+                          description: Merchant code
+                          maxLength: 10
+                          example: 12345
+                        name:
+                          type: string
+                          description: Billing name
+                          maxLength: 35
+                          example: ASIA PACIFIC LTD
+                        address1:
+                          type: string
+                          description: Billing address line 1
+                          maxLength: 35
+                          example: P O BOX 12345
+                        address2:
+                          type: string
+                          description: Billing address line 2
+                          maxLength: 35
+                          example: PONSONBY
+                        city:
+                          type: string
+                          description: City
+                          maxLength: 25
+                          example: AUCKLAND
+                        postalCode:
+                          type: string
+                          description: Postal code of billing address
+                          maxLength: 5
+                          example: 1001
+                    billingType:
+                      type: string
+                      description: Type of billing, e.g., Charge Business Account
+                      maxLength: 45
+                      example: Invoice for goods supplied
+                    netValue:
+                      type: number
+                      format: float
+                      description: Net or Goods Value of the invoice
+                      example: 150.00
+                    taxValue:
+                      type: number
+                      format: float
+                      description: GST value of the invoice
+                      example: 18.75
+                    totalValue:
+                      type: number
+                      format: float
+                      description: Total invoice value
+                      example: 168.75
+                    invoicedItems:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          itemCode:
+                            type: string
+                            description: Item code
+                            maxLength: 15
+                            example: 003R90649
+                          itemDescription:
+                            type: string
+                            description: Item description
+                            maxLength: 50
+                            example: A4 80gsm White
+                          quantityInvoiced:
+                            type: number
+                            format: float
+                            description: Invoiced quantity
+                            example: 25
+                          itemPrice:
+                            type: number
+                            format: float
+                            description: Item unit price
+                            example: 6.00
+                          itemNetValue:
+                            type: number
+                            format: float
+                            description: Item value (Quantity x unit price)
+                            example: 150.00
+                          itemTaxValue:
+                            type: number
+                            format: float
+                            description: Item GST value
+                          totalItemValue:
+                            type: number
+                            format: float
+                            description: Total line item value
+                          itemDespatch:
+                            type: object
+                            properties:
+                              docketNumber:
+                                type: string
+                                description: Delivery despatch docket number
+                                maxLength: 10
+                                example: DN1235689
+                              despatchDate:
+                                type: string
+                                format: date
+                                description: Despatch date in format yyyy-mm-dd
+                                example: 2016-05-01
+                            required:
+                              - docketNumber
+                              - despatchDate
+                  required:
+                    - invoiceNumber
+                    - invoiceDate
+                    - invoiceImage
+                    - orderReference
+                    - purchaseOrder
+                    - billTo
+                    - billingType
+                    - netValue
+                    - taxValue
+                    - totalValue
+      responses:
+        '201':
+          description: Invoice submitted successfully
+        '400':
+          description: Invalid input.
+        '500':
+          description: Internal server error.
+  /price-lists:
+    post:
+      summary: Submit a new price list
+      description: Add a new price list to the system.
+      operationId: submitPriceList
+      tags:
+        - Price Lists
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                supplierInfo:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: Header ID
+                      example: ABC
+                    name:
+                      type: string
+                      description: Header name
+                      example: ABC Suppliers Limited
+                    date:
+                      type: string
+                      format: date
+                      description: Header date in format yyyy-mm-dd
+                      example: 2002-10-18
+                    source:
+                      type: string
+                      description: Source of the header
+                      example: PRICE_LIST
+                    email:
+                      type: string
+                      format: email
+                      description: Email address for the header
+                      example: info@ABC.com
+                    reference:
+                      type: string
+                      description: Header reference
+                      maxLength: 10
+                      example: PL012422
+                    authentication:
+                      type: string
+                      description: Header authentication code
+                      example: D3118D10XXX04D52
+                    processOption:
+                      type: string
+                      description: Header process option
+                      example: REFRESH
+                  required:
+                    - id
+                    - name
+                    - date
+                    - source
+                priceList:
+                  type: object
+                  properties:
+                    priceListNumber:
+                      type: string
+                      description: Price list number
+                      maxLength: 10
+                      example: PL1234567
+                    effectiveDate:
+                      type: string
+                      format: date
+                      description: Effective date of the price list in format yyyy-mm-dd
+                      example: 2024-01-01
+                    expirationDate:
+                      type: string
+                      format: date
+                      description: Expiration date of the price list in format yyyy-mm-dd
+                      example: 2024-12-31
+                    items:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          itemCode:
+                            type: string
+                            description: Item code
+                            maxLength: 15
+                            example: 003R90649
+                          itemDescription:
+                            type: string
+                            description: Item description
+                            maxLength: 50
+                            example: A4 80gsm White
+                          itemPrice:
+                            type: number
+                            format: float
+                            description: Item unit price
+                            example: 6.00
+                  required:
+                    - priceListNumber
+                    - effectiveDate
+                    - items
+      responses:
+        '201':
+          description: Price list created successfully
+        '400':
+          description: Invalid input
+        '500':
+          description: Internal server error
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-auth-code
+  schemas:
+  
+    CatalogueEntry:
+      type: object
+      required:
+        - customerNumber
+        - items
+      properties:
+        customerNumber:
+          type: string
+          description: ECOS Customer Number
+          example: "1234567890"
+        items:
+          type: array
+          items:
+            type: object
+            required:
+              - code
+              - description
+            properties:
+              code:
+                type: string
+                description: Supplier's item code
+                example: "87416"
+              description:
+                type: string
+                description: Supplier's item description
+                example: "CHERRIES IQF"
+              sizeDescription:
+                type: string
+                description: Supplier's item dimensions
+                example: "1 KG"
+              brand:
+                type: string
+                description: Supplier's item brand
+                example: "CATCHOICE"
+              unitOfMeasure:
+                type: string
+                description: Unit of measure for the item
+                example: "BAG"
+              category:
+                type: string
+                description: Catalogue Category Group
+                example: "B3718"
+              categoryDescription:
+                type: string
+                description: Catalogue Category Description
+                example: "FROZEN FRUIT"
+              taxRate:
+                type: number
+                format: float
+                description: Tax rate for the item
+                example: 0.0
+              price:
+                type: object
+                required:
+                  - effectiveDate
+                  - amount
+                properties:
+                  effectiveDate:
+                    type: string
+                    description: Effective date of the price
+                    example: "*CURRENT"
+                  amount:
+                    type: number
+                    format: float
+                    description: Price of the item
+                    example: 10.71
+              quantityDescription:
+                type: string
+                description: Supplier's item quantity description
+                example: "50pk"
+              compatibleType:
+                type: string
+                description: Compatible type
+                example: "Laser Printer"
+              compatibleModels:
+                type: string
+                description: List of compatible models
+                example: "Stylus Colour 200"
+              extendedDescription:
+                type: string
+                description: Extended item description
+                example: "High-quality frozen cherries"
+              technicalSpecification:
+                type: string
+                description: Item technical specification
+                example: "Frozen at -18°C"
+              specificationURL:
+                type: string
+                description: URL to the manufacturer's technical specification
+                example: "http://example.com/spec"
+              specificationNotes:
+                type: string
+                description: Manufacturer's notes
+                example: "Best stored in a freezer"
+              unitOfMeasureDescription:
+                type: string
+                description: Long description for unit of measure
+                example: "Bag of 1 KG"
+              imageSmall:
+                type: string
+                description: Thumbnail image name
+                example: "cherries_small.jpg"
+              imageLarge:
+                type: string
+                description: Large image name
+                example: "cherries_large.jpg"
+              imagePDF:
+                type: string
+                description: PDF image name
+                example: "cherries.pdf"
+              brandLogo:
+                type: string
+                description: Brand logo image path
+                example: "catchoice.jpg"
+              leadTime:
+                type: integer
+                description: Lead time in days for shipping
+                example: 1
+              defaultWarehouse:
+                type: string
+                description: Default warehouse
+                example: "WH1"
+              stockOnHand:
+                type: integer
+                description: Current stock level
+                example: 100
+              outOfStockPolicy:
+                type: string
+                description: Out of stock policy
+                example: "0"
+              type:
+                type: string
+                description: Item type as defined by ECOS
+                example: "*INVENTORY"
+              weight:
+                type: number
+                format: float
+                description: Weight of item
+                example: 1.0
+              minimumOrderQuantity:
+                type: integer
+                description: Minimum order quantity
+                example: 1
+              maximumOrderQuantity:
+                type: integer
+                description: Maximum order quantity
+                example: 1000
+              lotSize:
+                type: integer
+                description: Minimum incremental amount that can be purchased
+                example: 1
+              priceList:
+                type: string
+                description: Price list code
+                example: "PL1"
+              currency:
+                type: string
+                description: Currency used for this item
+                example: "NZD"
+    PurchaseOrder:
+      type: object
+      required:
+        - customerNumber
+        - order
+      properties:
+        customerNumber:
+          type: string
+          description: ECOS customer number
+        order:
+          type: object
+          required:
+            - orderNumber
+            - orderDate
+            - purchaseOrderNumber
+            - createdBy
+            - delivery
+            - customer
+            - billing
+            - orderLines
+          properties:
+            orderNumber:
+              type: string
+              description: ECOS order number
+            orderDate:
+              type: string
+              format: date
+              description: ECOS order date in format yyyy-mm-dd
+            orderCreated:
+              type: string
+              format: date-time
+              description: Order creation date in format yyyy-mm-ddTHH:MM:SS
+            orderSent:
+              type: string
+              format: date-time
+              description: Order sent date in format yyyy-mm-ddTHH:MM:SS
+            purchaseOrderNumber:
+              type: string
+              description: ECOS purchase order number
+            createdBy:
+              type: string
+              description: Created by name
+            orderComments:
+              type: string
+              description: Order comments
+            orderReference:
+              type: string
+              description: Customer order reference
+            goodsValue:
+              type: number
+              format: float
+              description: Total goods value
+            taxValue:
+              type: number
+              format: float
+              description: Total tax value
+            totalValue:
+              type: number
+              format: float
+              description: Total order cost (GST + cost of goods)
+            currency:
+              type: string
+              description: Order currency (default = NZD)
+            delivery:
+              type: object
+              required:
+                - name
+                - address1
+                - city
+              properties:
+                name:
+                  type: string
+                  description: Name of organisation to be delivered to
+                address1:
+                  type: string
+                  description: Delivery address line 1
+                address2:
+                  type: string
+                  description: Delivery address line 2
+                address3:
+                  type: string
+                  description: Delivery address line 3
+                city:
+                  type: string
+                  description: Delivery city
+                country:
+                  type: string
+                  description: Delivery country
+                postCode:
+                  type: string
+                  description: Delivery postal code
+                latitude:
+                  type: string
+                  description: Delivery latitude
+                longitude:
+                  type: string
+                  description: Delivery longitude
+                comment:
+                  type: string
+                  description: Delivery comment
+                method:
+                  type: string
+                  description: Delivery method
+            customer:
+              type: object
+              required:
+                - billingId
+                - addressSequence
+                - name
+                - address1
+                - city
+                - country
+                - email
+              properties:
+                billingId:
+                  type: string
+                  description: Merchant/supplier customer ID
+                addressSequence:
+                  type: string
+                  description: Delivery sequence number
+                name:
+                  type: string
+                  description: Billing merchant/customer name
+                address1:
+                  type: string
+                  description: Billing address line 1
+                address2:
+                  type: string
+                  description: Billing address line 2
+                address3:
+                  type: string
+                  description: Billing address line 3
+                city:
+                  type: string
+                  description: Billing city
+                country:
+                  type: string
+                  description: Billing country
+                postCode:
+                  type: string
+                  description: Billing postal code
+                contactName:
+                  type: string
+                  description: Contact name
+                contactPhone:
+                  type: string
+                  description: Contact phone
+                email:
+                  type: string
+                  description: Contact email address
+            billing:
+              type: object
+              required:
+                - accountCode
+                - addressSequence
+                - debtorCode
+                - chargeType
+                - paymentType
+              properties:
+                accountCode:
+                  type: string
+                  description: Customer ID
+                addressSequence:
+                  type: string
+                  description: Customer delivery point code
+                debtorCode:
+                  type: string
+                  description: Debtor number
+                chargeType:
+                  type: string
+                  description: Charging type (*SUPPLIER or *SITE)
+                paymentType:
+                  type: string
+                  description: Customer payment type (*ACCOUNT, *CARD, *BANK, *POST, *FAX, *ARRANGED, *DEBIT)
+            orderLines:
+              type: array
+              items:
+                type: object
+                required:
+                  - lineNumber
+                  - productId
+                  - quantityOrdered
+                  - unitPrice
+                  - costOfGoods
+                properties:
+                  lineNumber:
+                    type: integer
+                    description: ECOS order line number
+                  documentLineReference:
+                    type: string
+                    description: Document line reference
+                  productId:
+                    type: string
+                    description: Customer product code
+                  productDescription:
+                    type: string
+                    description: Supplier's item description
+                  supplierItemId:
+                    type: string
+                    description: Supplier's item code
+                  unspsc:
+                    type: string
+                    description: UNSPSC catalogue code
+                  deliveryDate:
+                    type: string
+                    format: date
+                    description: Date delivery required
+                  latestDeliveryDate:
+                    type: string
+                    format: date
+                    description: Latest delivery date
+                  quantityOrdered:
+                    type: integer
+                    description: Quantity ordered
+                  innerPackQuantity:
+                    type: integer
+                    description: Supplier inner pack quantity
+                  unitOfMeasure:
+                    type: string
+                    description: Unit of measure
+                  unitPrice:
+                    type: number
+                    format: float
+                    description: Unit price of product
+                  supplierPrice:
+                    type: number
+                    format: float
+                    description: Supplier unit price
+                  supplierCurrency:
+                    type: string
+                    description: Supplier currency
+                  costOfGoods:
+                    type: number
+                    format: float
+                    description: Cost of product (unit price x quantity)
+                  taxValue:
+                    type: number
+                    format: float
+                    description: GST product value
+                  taxRate:
+                    type: number
+                    format: float
+                    description: Tax rate
+                  totalValue:
+                    type: number
+                    format: float
+                    description: Total order cost (GST + cost of goods)
+                  currency:
+                    type: string
+                    description: Order currency (default = NZD)
+                  comments:
+                    type: string
+                    description: Order line comments
+                  lineReference:
+                    type: string
+                    description: Order line reference
+    OrderConfirmation:
+      type: object
+      required:
+        - orderNumber
+        - orderDate
+        - orderLines
+      properties:
+        orderNumber:
+          type: string
+          description: ECOS Order number
+        orderDate:
+          type: string
+          format: date
+          description: ECOS Order date (yyyymmdd)
+        orderLines:
+          type: array
+          items:
+            type: object
+            properties:
+              lineNo:
+                type: integer
+                description: Order line sequence
+              itemCode:
+                type: string
+                description: Item code ordered
+              quantityConfirmed:
+                type: integer
+                description: Quantity confirmed to supply
+              expectedDelivery:
+                type: string
+                description: ETA Date/Time in format - yyyymmddhhmm
+              purchaseOrder:
+                type: string
+                description: Supplier purchase order reference
+              purchaseOrderLine:
+                type: integer
+                description: Supplier purchase order line reference
+              warehouse:
+                type: string
+                description: Supplier warehouse code
+              documentType:
+                type: string
+                description: Document Source Type (e.g., PickList, PurchOrder)
+              documentReference:
+                type: string
+                description: Document Reference (e.g., Picking list id)
+    DispatchNotifiction:
+      type: object
+      required:
+        - docketNumber
+        - dispatchDate
+        - orderNumber
+        - dispatchImagePath
+        - orderComplete
+        - deliveredTo
+        - sentFrom
+        - freightCompany
+        - consignmentNote
+        - trackingURL
+        - freightMethod
+        - numberOfPackages
+        - weight
+        - deliveryETA
+        - dispatchedItems
+      properties:
+        docketNumber:
+          type: string
+          description: Delivery dispatch docket number
+        dispatchDate:
+          type: string
+          format: date-time
+          description: Dispatch Date/Time (yyyymmddhhmmss or yyyymmdd)
+        orderNumber:
+          type: string
+          description: ECOS Order number
+        dispatchImagePath:
+          type: string
+          description: Image path to Dispatch PDF
+        orderComplete:
+          type: string
+          description: Order completion status (PART or COMPLETE)
+        deliveredTo:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of organisation delivered to
+            address1:
+              type: string
+              description: Delivery address line 1
+            address2:
+              type: string
+              description: Delivery address line 2
+            address3:
+              type: string
+              description: Delivery address line 3
+            city:
+              type: string
+              description: City
+            country:
+              type: string
+              description: Country
+            postCode:
+              type: string
+              description: Postal code for delivery address
+        sentFrom:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Supplier/Warehouse name
+            address1:
+              type: string
+              description: Address line 1
+            address2:
+              type: string
+              description: Address line 2
+            address3:
+              type: string
+              description: Address line 3
+            city:
+              type: string
+              description: City
+            country:
+              type: string
+              description: Country
+            postCode:
+              type: string
+              description: Postal code of supplier warehouse
+        freightCompany:
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of freight company
+            address1:
+              type: string
+              description: Address line 1
+            address2:
+              type: string
+              description: Address line 2
+            address3:
+              type: string
+              description: Address line 3
+            city:
+              type: string
+              description: City
+            country:
+              type: string
+              description: Country
+            postCode:
+              type: string
+              description: Postal code of freight company
+        consignmentNote:
+          type: string
+          description: Freight consignment note number
+        trackingURL:
+          type: string
+          description: URL to track the consignment
+        freightMethod:
+          type: string
+          description: Freight method
+        numberOfPackages:
+          type: integer
+          description: Number of packages
+        weight:
+          type: number
+          format: float
+          description: Weight in KG's
+        deliveryETA:
+          type: string
+          format: date-time
+          description: Estimated delivery time (yyyymmddhhmm)
+        actualDeliveryTime:
+          type: string
+          format: date-time
+          description: Actual delivery time (yyyymmddhhmm)
+        dispatchedItems:
+          type: array
+          items:
+            type: object
+            properties:
+              itemCode:
+                type: string
+                description: The item dispatched
+              itemDescription:
+                type: string
+                description: Item description
+              quantityDispatched:
+                type: integer
+                description: The quantity dispatched
+              batchNumber:
+                type: string
+                description: Batch/Lot number
+              serialNumber:
+                type: string
+                description: Serial number
+    TrackandTrace:
+      type: object
+      required:
+        - docketNumber
+        - despatchDate
+      properties:
+        header:
+          type: object
+          required:
+            - headerId
+            - headerName
+            - headerDate
+            - headerSource
+            - headerEmail
+            - headerReference
+            - headerAuthentication
+          properties:
+            headerId:
+              type: string
+              description: Unique identifier for the header
+            headerName:
+              type: string
+              description: Name of the supplier
+            headerDate:
+              type: string
+              format: date
+              description: Date of the header (yyyymmdd)
+            headerSource:
+              type: string
+              description: Source of the dispatch tracking
+            headerEmail:
+              type: string
+              format: email
+              description: Email address of the supplier
+            headerReference:
+              type: string
+              description: Reference number for the header
+            headerAuthentication:
+              type: string
+              description: Authentication code for the header
+        tracking:
+          type: object
+          required:
+            - docketNumber
+            - despatchDate
+          properties:
+            docketNumber:
+              type: string
+              description: Delivery dispatch docket number
+            despatchDate:
+              type: string
+              format: date-time
+              description: Despatch Date/Time (yyyymmddhhmmss)
+            consignmentNote:
+              type: string
+              description: Freight consignment note number
+              default: "Not Available"
+            trackingURL:
+              type: string
+              description: URL to track the consignment
+  examples:
+    stockOnHandExample1:
+      summary: Example for SKU stocking information at level only
+      value:
+        header:
+          headerId: ABC
+          headerName: ABC Suppliers Limited
+          headerDate: 20021018
+          headerSource: STOCK
+          headerEmail: evans@ABC.com
+          headerReference: 012422
+          headerAuthentication: D3118D10XXX04D52
+        item:
+          skuCode: 528657
+          skuDescription: 6 Bottle Wine / Bear Fabric Bag
+          stockOnHand: 25
+          onOrder: 100
+          skuLeadTime: 45
+    stockOnHandExample2:
+      summary: Example for SKU stocking information at Warehouse level only
+      value:
+        header:
+          headerId: ABC
+          headerName: ABC Suppliers Limited
+          headerDate: 20021018
+          headerSource: STOCK
+          headerEmail: evans@ABC.com
+          headerReference: 012422
+          headerAuthentication: D3118D10XXX04D52
+        item:
+          skuCode: 528657
+          skuDescription: 6 Bottle Wine / Bear Fabric Bag
+          onOrder: 100
+          warehouse:
+            - warehouseCode: A
+              stockOnHand: 10
+            - warehouseCode: B
+              stockOnHand: 15
+    stockOnHandExample3:
+      summary: Example for SKU stocking information at Warehouse Location level only
+      value:
+        header:
+          headerId: ABC
+          headerName: ABC Suppliers Limited
+          headerDate: 20021018
+          headerSource: STOCK
+          headerEmail: evans@ABC.com
+          headerReference: 012422
+          headerAuthentication: D3118D10XXX04D52
+        item:
+          skuCode: 528657
+          skuDescription: 6 Bottle Wine / Bear Fabric Bag
+          onOrder: 100
+          location:
+            - warehouseCode: A
+              locationId: 010-EE-07-09
+              stockOnHand: 10
+              receiptDate: 20150620
+            - warehouseCode: A
+              locationId: 010-EE-07-11
+              stockOnHand: 35
+              receiptDate: 20150620
+    stockOnHandExample4:
+      summary: Example for SKU stocking information at Warehouse Location, Lot/batches level
+      value:
+        header:
+          headerId: ABC
+          headerName: ABC Suppliers Limited
+          headerDate: 20021018
+          headerSource: STOCK
+          headerEmail: evans@ABC.com
+          headerReference: 012422
+          headerAuthentication: D3118D10XXX04D52
+        item:
+          skuCode: 528657
+          skuDescription: 6 Bottle Wine / Bear Fabric Bag
+          onOrder: 100
+          location:
+            - warehouseCode: A
+              locationId: 010-EE-07-09
+              batches:
+                - batchNumber: P5054473
+                  receiptDate: 20150620
+                  stockOnHand: 10
+                - batchNumber: P5054474
+                  receiptDate: 20150720
+                  stockOnHand: 20
+                - batchNumber: P5054475
+                  receiptDate: 20150901
+                  stockOnHand: 15
+    stockOnHandExample5:
+      summary: Example for SKU stocking information at Warehouse location and Lot/batches level, including purchase order information
+      value:
+        header:
+          headerId: ABC
+          headerName: ABC Suppliers Limited
+          headerDate: 20021018
+          headerSource: STOCK
+          headerEmail: evans@ABC.com
+          headerReference: 012422
+          headerAuthentication: D3118D10XXX04D52
+        item:
+          skuCode: 528657
+          skuDescription: 6 Bottle Wine / Bear Fabric Bag
+          location:
+            - warehouseCode: A
+              locationId: 010-EE-07-09
+              batches:
+                - batchNumber: P5054473
+                  receiptDate: 20150620
+                  stockOnHand: 10
+                - batchNumber: P5054474
+                  receiptDate: 20150720
+                  stockOnHand: 20
+                - batchNumber: P5054475
+                  receiptDate: 20150901
+                  stockOnHand: 15
+          onOrder:
+            - purchaseOrder: P5054475
+              customerOrderReference: My PO
