@@ -178,168 +178,21 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required:
-                - supplierInfo
-                - item
-              properties:
-                supplierInfo:
-                  type: object
-                  required:
-                    - id
-                    - name
-                    - date
-                    - source
-                    - email
-                    - reference
-                  properties:
-                    headerId:
-                      type: string
-                      description: Unique identifier for the header
-                    headerName:
-                      type: string
-                      description: Name of the supplier
-                    headerDate:
-                      type: string
-                      format: date
-                      description: Date of the header (yyyymmdd)
-                    headerSource:
-                      type: string
-                      description: Source of the stock status
-                    headerEmail:
-                      type: string
-                      format: email
-                      description: Email address of the supplier
-                    headerReference:
-                      type: string
-                      description: Reference number for the header
-                    headerAuthentication:
-                      type: string
-                      description: Authentication code for the header
-                item:
-                  type: object
-                  required:
-                    - skuCode
-                  properties:
-                    skuCode:
-                      type: string
-                      description: A valid supplier SKU Item Code
-                    skuDescription:
-                      type: string
-                      description: SKU item description
-                    skuLeadTime:
-                      type: integer
-                      description: SKU Inventory Lead time
-                    skuProcurementLeadTime:
-                      type: integer
-                      description: SKU Procurement Lead time
-                    stockOnHand:
-                      type: integer
-                      description: Current stock level
-                    frozen:
-                      type: integer
-                      description: Frozen Quantity
-                    inTransit:
-                      type: integer
-                      description: Intransit Quantity
-                    warehouse:
-                      type: array
-                      items:
-                        type: object
-                        required:
-                          - warehouseCode
-                          - stockOnHand
-                        properties:
-                          warehouseCode:
-                            type: string
-                            description: Code of the warehouse
-                          warehouseDescription:
-                            type: string
-                            description: Description of the warehouse
-                          stockOnHand:
-                            type: integer
-                            description: Physical Quantity exclusive of Frozen and On order Quantities
-                          frozen:
-                            type: integer
-                            description: Frozen Quantity
-                    location:
-                      type: array
-                      items:
-                        type: object
-                        required:
-                          - warehouseCode
-                          - locationId
-                          - stockOnHand
-                        properties:
-                          warehouseCode:
-                            type: string
-                            description: Warehouse Code
-                          locationId:
-                            type: string
-                            description: Location identifier
-                          batchNumber:
-                            type: string
-                            description: Batch/Lot identifier
-                          stockOnHand:
-                            type: integer
-                            description: Physical Quantity
-                          onOrder:
-                            type: integer
-                            description: On Order Quantity
-                          frozen:
-                            type: integer
-                            description: Frozen or Reserved Quantity
-                          ownership:
-                            type: string
-                            description: Ownership Customer Code
-                          receiptDate:
-                            type: string
-                            format: date
-                            description: Warehouse Receipt date (yyyymmdd)
-                          expiryDate:
-                            type: string
-                            format: date
-                            description: Stock expiry date (yyyymmdd)
-                    onOrder:
-                      type: array
-                      items:
-                        type: object
-                        required:
-                          - purchaseOrder
-                          - supplierName
-                          - orderedQuantity
-                          - receivedQuantity
-                        properties:
-                          purchaseOrder:
-                            type: string
-                            description: Purchase or Production Order
-                          customerOrderReference:
-                            type: string
-                            description: Customer Order reference
-                          supplierName:
-                            type: string
-                            description: Supplier
-                          orderedQuantity:
-                            type: integer
-                            description: Ordered Quantity
-                          receivedQuantity:
-                            type: integer
-                            description: Received Quantity
-                          orderDate:
-                            type: string
-                            format: date
-                            description: Order date (yyyymmdd)
-                          requiredDate:
-                            type: string
-                            format: date
-                            description: Required date (yyyymmdd)
-                          dueDate:
-                            type: string
-                            format: date
-                            description: Due date (yyyymmdd)
-                          orderStatus:
-                            type: string
-                            description: Order Status Comment
+              $ref: "#/components/schemas/StockStatus"
+            examples:
+              stockOnHandExample1:
+                $ref: "#/components/examples/stockOnHandExample1"
+              stockOnHandExample2:
+                $ref: "#/components/examples/stockOnHandExample2"
+              stockOnHandExample3:
+                $ref: "#/components/examples/stockOnHandExample3"
+              stockOnHandExample4:
+                $ref: "#/components/examples/stockOnHandExample4"
+              stockOnHandExample5:
+                $ref: "#/components/examples/stockOnHandExample5"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/StockStatus"
             examples:
               stockOnHandExample1:
                 $ref: "#/components/examples/stockOnHandExample1"
@@ -372,226 +225,11 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                supplierInfo:
-                  type: object
-                  required:
-                    - id
-                    - name
-                    - date
-                    - source
-                  properties:
-                    id:
-                      type: string
-                      description: Header ID
-                      example: ABC
-                    name:
-                      type: string
-                      description: Header name
-                      example: ABC Suppliers Limited
-                    date:
-                      type: string
-                      format: date
-                      description: Header date in format yyyy-mm-dd
-                      example: 2002-10-18
-                    source:
-                      type: string
-                      description: Source of the header
-                      example: INVOICE
-                    email:
-                      type: string
-                      format: email
-                      description: Email address for the header
-                      example: evans@ABC.com
-                    reference:
-                      type: string
-                      description: Header reference
-                      maxLength: 10
-                      example: 012422
-                    processOption:
-                      type: string
-                      description: Header process option
-                      example: REFRESH
-                invoice:
-                  type: object
-                  properties:
-                    invoiceNumber:
-                      type: string
-                      description: Invoice or credit note number
-                      maxLength: 10
-                      example: C101800374
-                    invoiceDate:
-                      type: string
-                      format: date
-                      description: Date of the invoice in format yyyy-mm-dd
-                      example: 2002-10-18
-                    despatches:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          docketNumber:
-                            type: string
-                            description: Delivery despatch docket number
-                            maxLength: 10
-                            example: DN1235689
-                          despatchDate:
-                            type: string
-                            format: date
-                            description: Despatch date in format yyyy-mm-dd
-                            example: 2016-05-01
-                        required:
-                          - docketNumber
-                          - despatchDate
-                    invoiceImage:
-                      type: string
-                      description: Image path to Invoice/Credit Note PDF
-                      maxLength: 256
-                      example: http://www.abc.com/invoice/C101800374
-                    orderReference:
-                      type: string
-                      description: Invoice/Customer Reference
-                      maxLength: 20
-                      example: FRED
-                    purchaseOrder:
-                      type: string
-                      description: Supplier Purchase Order number
-                      maxLength: 15
-                      example: 1234567
-                    orders:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          orderNumber:
-                            type: string
-                            description: Ecos order number
-                            maxLength: 10
-                            example: 526761
-                          orderDate:
-                            type: string
-                            format: date
-                            description: Ecos order date in format yyyy-mm-dd
-                            example: 2002-10-17
-                    billTo:
-                      type: object
-                      properties:
-                        merchantCode:
-                          type: string
-                          description: Merchant code
-                          maxLength: 10
-                          example: 12345
-                        name:
-                          type: string
-                          description: Billing name
-                          maxLength: 35
-                          example: ASIA PACIFIC LTD
-                        address1:
-                          type: string
-                          description: Billing address line 1
-                          maxLength: 35
-                          example: P O BOX 12345
-                        address2:
-                          type: string
-                          description: Billing address line 2
-                          maxLength: 35
-                          example: PONSONBY
-                        city:
-                          type: string
-                          description: City
-                          maxLength: 25
-                          example: AUCKLAND
-                        postalCode:
-                          type: string
-                          description: Postal code of billing address
-                          maxLength: 5
-                          example: 1001
-                    billingType:
-                      type: string
-                      description: Type of billing, e.g., Charge Business Account
-                      maxLength: 45
-                      example: Invoice for goods supplied
-                    netValue:
-                      type: number
-                      format: float
-                      description: Net or Goods Value of the invoice
-                      example: 150.00
-                    taxValue:
-                      type: number
-                      format: float
-                      description: GST value of the invoice
-                      example: 18.75
-                    totalValue:
-                      type: number
-                      format: float
-                      description: Total invoice value
-                      example: 168.75
-                    invoicedItems:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          itemCode:
-                            type: string
-                            description: Item code
-                            maxLength: 15
-                            example: 003R90649
-                          itemDescription:
-                            type: string
-                            description: Item description
-                            maxLength: 50
-                            example: A4 80gsm White
-                          quantityInvoiced:
-                            type: number
-                            format: float
-                            description: Invoiced quantity
-                            example: 25
-                          itemPrice:
-                            type: number
-                            format: float
-                            description: Item unit price
-                            example: 6.00
-                          itemNetValue:
-                            type: number
-                            format: float
-                            description: Item value (Quantity x unit price)
-                            example: 150.00
-                          itemTaxValue:
-                            type: number
-                            format: float
-                            description: Item GST value
-                          totalItemValue:
-                            type: number
-                            format: float
-                            description: Total line item value
-                          itemDespatch:
-                            type: object
-                            properties:
-                              docketNumber:
-                                type: string
-                                description: Delivery despatch docket number
-                                maxLength: 10
-                                example: DN1235689
-                              despatchDate:
-                                type: string
-                                format: date
-                                description: Despatch date in format yyyy-mm-dd
-                                example: 2016-05-01
-                            required:
-                              - docketNumber
-                              - despatchDate
-                  required:
-                    - invoiceNumber
-                    - invoiceDate
-                    - invoiceImage
-                    - orderReference
-                    - purchaseOrder
-                    - billTo
-                    - billingType
-                    - netValue
-                    - taxValue
-                    - totalValue
+              $ref: "#/components/schemas/Invoices"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/Invoices"
+              
       responses:
         '201':
           description: Invoice submitted successfully
@@ -599,6 +237,8 @@ paths:
           description: Invalid input.
         '500':
           description: Internal server error.
+      security:
+        - ApiKeyAuth: []
   /price-lists:
     post:
       summary: Submit a new price list
@@ -610,94 +250,11 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              type: object
-              properties:
-                supplierInfo:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      description: Header ID
-                      example: ABC
-                    name:
-                      type: string
-                      description: Header name
-                      example: ABC Suppliers Limited
-                    date:
-                      type: string
-                      format: date
-                      description: Header date in format yyyy-mm-dd
-                      example: 2002-10-18
-                    source:
-                      type: string
-                      description: Source of the header
-                      example: PRICE_LIST
-                    email:
-                      type: string
-                      format: email
-                      description: Email address for the header
-                      example: info@ABC.com
-                    reference:
-                      type: string
-                      description: Header reference
-                      maxLength: 10
-                      example: PL012422
-                    authentication:
-                      type: string
-                      description: Header authentication code
-                      example: D3118D10XXX04D52
-                    processOption:
-                      type: string
-                      description: Header process option
-                      example: REFRESH
-                  required:
-                    - id
-                    - name
-                    - date
-                    - source
-                priceList:
-                  type: object
-                  properties:
-                    priceListNumber:
-                      type: string
-                      description: Price list number
-                      maxLength: 10
-                      example: PL1234567
-                    effectiveDate:
-                      type: string
-                      format: date
-                      description: Effective date of the price list in format yyyy-mm-dd
-                      example: 2024-01-01
-                    expirationDate:
-                      type: string
-                      format: date
-                      description: Expiration date of the price list in format yyyy-mm-dd
-                      example: 2024-12-31
-                    items:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          itemCode:
-                            type: string
-                            description: Item code
-                            maxLength: 15
-                            example: 003R90649
-                          itemDescription:
-                            type: string
-                            description: Item description
-                            maxLength: 50
-                            example: A4 80gsm White
-                          itemPrice:
-                            type: number
-                            format: float
-                            description: Item unit price
-                            example: 6.00
-                  required:
-                    - priceListNumber
-                    - effectiveDate
-                    - items
+            schema: 
+              $ref: "#/components/schemas/PriceList"
+          application/xml:
+            schema: 
+              $ref: "#/components/schemas/PriceList"
       responses:
         '201':
           description: Price list created successfully
@@ -712,7 +269,478 @@ components:
       in: header
       name: x-auth-code
   schemas:
-  
+    Invoices:
+      type: object
+      properties:
+        supplierInfo:
+          type: object
+          required:
+            - id
+            - name
+            - date
+            - source
+          properties:
+            id:
+              type: string
+              description: Header ID
+              example: ABC
+            name:
+              type: string
+              description: Header name
+              example: ABC Suppliers Limited
+            date:
+              type: string
+              format: date
+              description: Header date in format yyyy-mm-dd
+              example: 2002-10-18
+            source:
+              type: string
+              description: Source of the header
+              example: INVOICE
+            email:
+              type: string
+              format: email
+              description: Email address for the header
+              example: evans@ABC.com
+            reference:
+              type: string
+              description: Header reference
+              maxLength: 10
+              example: 012422
+            processOption:
+              type: string
+              description: Header process option
+              example: REFRESH
+        invoice:
+          type: object
+          properties:
+            invoiceNumber:
+              type: string
+              description: Invoice or credit note number
+              maxLength: 10
+              example: C101800374
+            invoiceDate:
+              type: string
+              format: date
+              description: Date of the invoice in format yyyy-mm-dd
+              example: 2002-10-18
+            despatches:
+              type: array
+              items:
+                type: object
+                properties:
+                  docketNumber:
+                    type: string
+                    description: Delivery despatch docket number
+                    maxLength: 10
+                    example: DN1235689
+                  despatchDate:
+                    type: string
+                    format: date
+                    description: Despatch date in format yyyy-mm-dd
+                    example: 2016-05-01
+                required:
+                  - docketNumber
+                  - despatchDate
+            invoiceImage:
+              type: string
+              description: Image path to Invoice/Credit Note PDF
+              maxLength: 256
+              example: http://www.abc.com/invoice/C101800374
+            orderReference:
+              type: string
+              description: Invoice/Customer Reference
+              maxLength: 20
+              example: FRED
+            purchaseOrder:
+              type: string
+              description: Supplier Purchase Order number
+              maxLength: 15
+              example: 1234567
+            orders:
+              type: array
+              items:
+                type: object
+                properties:
+                  orderNumber:
+                    type: string
+                    description: Ecos order number
+                    maxLength: 10
+                    example: 526761
+                  orderDate:
+                    type: string
+                    format: date
+                    description: Ecos order date in format yyyy-mm-dd
+                    example: 2002-10-17
+            billTo:
+              type: object
+              properties:
+                merchantCode:
+                  type: string
+                  description: Merchant code
+                  maxLength: 10
+                  example: 12345
+                name:
+                  type: string
+                  description: Billing name
+                  maxLength: 35
+                  example: ASIA PACIFIC LTD
+                address1:
+                  type: string
+                  description: Billing address line 1
+                  maxLength: 35
+                  example: P O BOX 12345
+                address2:
+                  type: string
+                  description: Billing address line 2
+                  maxLength: 35
+                  example: PONSONBY
+                city:
+                  type: string
+                  description: City
+                  maxLength: 25
+                  example: AUCKLAND
+                postalCode:
+                  type: string
+                  description: Postal code of billing address
+                  maxLength: 5
+                  example: 1001
+            billingType:
+              type: string
+              description: Type of billing, e.g., Charge Business Account
+              maxLength: 45
+              example: Invoice for goods supplied
+            netValue:
+              type: number
+              format: float
+              description: Net or Goods Value of the invoice
+              example: 150.00
+            taxValue:
+              type: number
+              format: float
+              description: GST value of the invoice
+              example: 18.75
+            totalValue:
+              type: number
+              format: float
+              description: Total invoice value
+              example: 168.75
+            invoicedItems:
+              type: array
+              items:
+                type: object
+                properties:
+                  itemCode:
+                    type: string
+                    description: Item code
+                    maxLength: 15
+                    example: 003R90649
+                  itemDescription:
+                    type: string
+                    description: Item description
+                    maxLength: 50
+                    example: A4 80gsm White
+                  quantityInvoiced:
+                    type: number
+                    format: float
+                    description: Invoiced quantity
+                    example: 25
+                  itemPrice:
+                    type: number
+                    format: float
+                    description: Item unit price
+                    example: 6.00
+                  itemNetValue:
+                    type: number
+                    format: float
+                    description: Item value (Quantity x unit price)
+                    example: 150.00
+                  itemTaxValue:
+                    type: number
+                    format: float
+                    description: Item GST value
+                  totalItemValue:
+                    type: number
+                    format: float
+                    description: Total line item value
+                  itemDespatch:
+                    type: object
+                    properties:
+                      docketNumber:
+                        type: string
+                        description: Delivery despatch docket number
+                        maxLength: 10
+                        example: DN1235689
+                      despatchDate:
+                        type: string
+                        format: date
+                        description: Despatch date in format yyyy-mm-dd
+                        example: 2016-05-01
+                    required:
+                      - docketNumber
+                      - despatchDate
+          required:
+            - invoiceNumber
+            - invoiceDate
+            - invoiceImage
+            - orderReference
+            - purchaseOrder
+            - billTo
+            - billingType
+            - netValue
+            - taxValue
+            - totalValue
+    PriceList:
+      type: object
+      properties:
+        supplierInfo:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Header ID
+              example: ABC
+            name:
+              type: string
+              description: Header name
+              example: ABC Suppliers Limited
+            date:
+              type: string
+              format: date
+              description: Header date in format yyyy-mm-dd
+              example: 2002-10-18
+            source:
+              type: string
+              description: Source of the header
+              example: PRICE_LIST
+            email:
+              type: string
+              format: email
+              description: Email address for the header
+              example: info@ABC.com
+            reference:
+              type: string
+              description: Header reference
+              maxLength: 10
+              example: PL012422
+            authentication:
+              type: string
+              description: Header authentication code
+              example: D3118D10XXX04D52
+            processOption:
+              type: string
+              description: Header process option
+              example: REFRESH
+          required:
+            - id
+            - name
+            - date
+            - source
+        priceList:
+          type: object
+          properties:
+            priceListNumber:
+              type: string
+              description: Price list number
+              maxLength: 10
+              example: PL1234567
+            effectiveDate:
+              type: string
+              format: date
+              description: Effective date of the price list in format yyyy-mm-dd
+              example: 2024-01-01
+            expirationDate:
+              type: string
+              format: date
+              description: Expiration date of the price list in format yyyy-mm-dd
+              example: 2024-12-31
+            items:
+              type: array
+              items:
+                type: object
+                properties:
+                  itemCode:
+                    type: string
+                    description: Item code
+                    maxLength: 15
+                    example: 003R90649
+                  itemDescription:
+                    type: string
+                    description: Item description
+                    maxLength: 50
+                    example: A4 80gsm White
+                  itemPrice:
+                    type: number
+                    format: float
+                    description: Item unit price
+                    example: 6.00
+          required:
+            - priceListNumber
+            - effectiveDate
+            - items
+    StockStatus:
+      type: object
+      required:
+        - supplierInfo
+        - item
+      properties:
+        supplierInfo:
+          type: object
+          required:
+            - id
+            - name
+            - date
+            - source
+            - email
+            - reference
+          properties:
+            headerId:
+              type: string
+              description: Unique identifier for the header
+            headerName:
+              type: string
+              description: Name of the supplier
+            headerDate:
+              type: string
+              format: date
+              description: Date of the header (yyyymmdd)
+            headerSource:
+              type: string
+              description: Source of the stock status
+            headerEmail:
+              type: string
+              format: email
+              description: Email address of the supplier
+            headerReference:
+              type: string
+              description: Reference number for the header
+            headerAuthentication:
+              type: string
+              description: Authentication code for the header
+        item:
+          type: object
+          required:
+            - skuCode
+          properties:
+            skuCode:
+              type: string
+              description: A valid supplier SKU Item Code
+            skuDescription:
+              type: string
+              description: SKU item description
+            skuLeadTime:
+              type: integer
+              description: SKU Inventory Lead time
+            skuProcurementLeadTime:
+              type: integer
+              description: SKU Procurement Lead time
+            stockOnHand:
+              type: integer
+              description: Current stock level
+            frozen:
+              type: integer
+              description: Frozen Quantity
+            inTransit:
+              type: integer
+              description: Intransit Quantity
+            warehouse:
+              type: array
+              items:
+                type: object
+                required:
+                  - warehouseCode
+                  - stockOnHand
+                properties:
+                  warehouseCode:
+                    type: string
+                    description: Code of the warehouse
+                  warehouseDescription:
+                    type: string
+                    description: Description of the warehouse
+                  stockOnHand:
+                    type: integer
+                    description: Physical Quantity exclusive of Frozen and On order Quantities
+                  frozen:
+                    type: integer
+                    description: Frozen Quantity
+            location:
+              type: array
+              items:
+                type: object
+                required:
+                  - warehouseCode
+                  - locationId
+                  - stockOnHand
+                properties:
+                  warehouseCode:
+                    type: string
+                    description: Warehouse Code
+                  locationId:
+                    type: string
+                    description: Location identifier
+                  batchNumber:
+                    type: string
+                    description: Batch/Lot identifier
+                  stockOnHand:
+                    type: integer
+                    description: Physical Quantity
+                  onOrder:
+                    type: integer
+                    description: On Order Quantity
+                  frozen:
+                    type: integer
+                    description: Frozen or Reserved Quantity
+                  ownership:
+                    type: string
+                    description: Ownership Customer Code
+                  receiptDate:
+                    type: string
+                    format: date
+                    description: Warehouse Receipt date (yyyymmdd)
+                  expiryDate:
+                    type: string
+                    format: date
+                    description: Stock expiry date (yyyymmdd)
+            onOrder:
+              type: array
+              items:
+                type: object
+                required:
+                  - purchaseOrder
+                  - supplierName
+                  - orderedQuantity
+                  - receivedQuantity
+                properties:
+                  purchaseOrder:
+                    type: string
+                    description: Purchase or Production Order
+                  customerOrderReference:
+                    type: string
+                    description: Customer Order reference
+                  supplierName:
+                    type: string
+                    description: Supplier
+                  orderedQuantity:
+                    type: integer
+                    description: Ordered Quantity
+                  receivedQuantity:
+                    type: integer
+                    description: Received Quantity
+                  orderDate:
+                    type: string
+                    format: date
+                    description: Order date (yyyymmdd)
+                  requiredDate:
+                    type: string
+                    format: date
+                    description: Required date (yyyymmdd)
+                  dueDate:
+                    type: string
+                    format: date
+                    description: Due date (yyyymmdd)
+                  orderStatus:
+                    type: string
+                    description: Order Status Comment
     CatalogueEntry:
       type: object
       required:
